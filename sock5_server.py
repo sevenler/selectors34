@@ -25,8 +25,7 @@ class SockV5Server(object):
     def __init__(self, port=1080):
         self.port = port
         self.pool = Pool(1000)
-        self.server = StreamServer(('0.0.0.0', self.port),
-                                   self.handler)
+        self.server = StreamServer(('0.0.0.0', self.port), self.handler)
 
     def close_sock_and_exit(self, client_sock=None, server_sock=None):
         if client_sock:
@@ -45,7 +44,7 @@ class SockV5Server(object):
         if ord(recv[0]) != SOCK_V5:
             self.close_sock_and_exit(client_sock)
 
-        print 'version and auth %s'%recv
+        #print 'version and auth %x'%recv
 
         method = None
         num_methods = ord(recv[1])
@@ -60,6 +59,7 @@ class SockV5Server(object):
 
         send_msg = '\x05' + chr(method)
         client_sock.send(send_msg)
+        #print 'version and send %x'%send_msg
 
     def process_sock_request(self, client_sock):
         recv = client_sock.recv(BUFFER)
@@ -131,7 +131,7 @@ class SockV5Server(object):
             # lose some packages sometimes.
             self.close_sock_and_exit(recv_sock, send_sock)
 
-        print 'recv and send msg %'%msg
+        print 'recv and send msg %s'%msg
 
         send_sock.sendall(msg)
 
@@ -149,5 +149,5 @@ class SockV5Server(object):
 
 
 if '__main__' == __name__:
-    sock_v5_server = SockV5Server(1081)
+    sock_v5_server = SockV5Server(1087)
     sock_v5_server.serve_forever()
